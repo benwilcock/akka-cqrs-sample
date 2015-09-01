@@ -8,7 +8,7 @@ import java.util.ArrayList;
 /**
  * Created by ben on 28/08/15.
  */
-public class ExampleState implements Serializable{
+public class ExampleState implements Serializable {
 
     private final ArrayList<String> events;
 

@@ -12,6 +12,7 @@
         <project.junit.version>4.8.1</project.junit.version>
         <project.akka.version>2.0.2</project.akka.version>
         <project.akka-persistence.version>2.3.12</project.akka-persistence.version>
+        <project.akka-persistence-eventstore.version>2.0.2</project.akka-persistence-eventstore.version>
     </properties>
 
     <dependencies>
@@ -21,10 +22,15 @@
             <version>${project.junit.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-persistence-experimental_2.11</artifactId>
             <version>${project.akka-persistence.version}</version>
+        </dependency>-->
+        <dependency>
+            <groupId>com.geteventstore</groupId>
+            <artifactId>akka-persistence-eventstore_2.11</artifactId>
+            <version>${project.akka-persistence-eventstore.version}</version>
         </dependency>
     </dependencies>
 

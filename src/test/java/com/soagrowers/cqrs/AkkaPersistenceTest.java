@@ -38,7 +38,6 @@ public class AkkaPersistenceTest {
         system.shutdown();
     }
 
-
     @Test
     public void test(){
         persistentActor.tell(new Cmd("foo"), null);
