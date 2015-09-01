@@ -17,3 +17,7 @@ hs_err_pid*
 
 # Build
 target
+
+#Akka
+journal
+snapshots
