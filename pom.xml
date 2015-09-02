@@ -22,16 +22,36 @@
             <version>${project.junit.version}</version>
             <scope>test</scope>
         </dependency>
-        <!--<dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>1.7.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-persistence-experimental_2.11</artifactId>
             <version>${project.akka-persistence.version}</version>
-        </dependency>-->
-        <dependency>
+        </dependency>
+        <!--<dependency>
             <groupId>com.geteventstore</groupId>
             <artifactId>akka-persistence-eventstore_2.11</artifactId>
             <version>${project.akka-persistence-eventstore.version}</version>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
     <build>

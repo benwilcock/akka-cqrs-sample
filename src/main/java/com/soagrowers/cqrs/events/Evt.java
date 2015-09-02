@@ -7,14 +7,14 @@ import java.io.Serializable;
  */
 public class Evt implements Serializable{
 
-    private final String data;
+    private final String eventId;
 
-    public Evt(String id) {
-        this.data = id;
+    public Evt(String eventId) {
+        this.eventId = eventId;
     }
 
-    public String getData() {
-        return data;
+    public String getEventId() {
+        return eventId;
     }
 }
 

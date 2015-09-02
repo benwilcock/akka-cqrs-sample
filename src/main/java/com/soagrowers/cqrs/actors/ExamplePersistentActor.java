@@ -14,7 +14,7 @@ import static java.util.Arrays.asList;
 public class ExamplePersistentActor extends UntypedPersistentActor{
 
     @Override
-    public String persistenceId() { return "sample-id-1"; }
+    public String persistenceId() { return "my-todo-item-stream"; }
 
     private ExampleState state = new ExampleState();
 
@@ -36,7 +36,7 @@ public class ExamplePersistentActor extends UntypedPersistentActor{
     @Override
     public void onReceiveCommand(Object msg) {
         if (msg instanceof Cmd) {
-            final String data = ((Cmd)msg).getData();
+            final String data = ((Cmd)msg).getCommandId();
             final Evt evt1 = new Evt(data + "-" + getNumEvents());
             final Evt evt2 = new Evt(data + "-" + (getNumEvents() + 1));
             persist(asList(evt1, evt2), new Procedure<Evt>() {

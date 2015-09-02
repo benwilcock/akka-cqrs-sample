@@ -7,13 +7,20 @@ import java.io.Serializable;
  */
 public class Cmd implements Serializable{
 
-    private final String data;
+    private final String commandId;
 
     public Cmd(String id) {
-        this.data = id;
+        this.commandId = id;
     }
 
-    public String getData() {
-        return data;
+    public String getCommandId() {
+        return commandId;
+    }
+
+    @Override
+    public String toString() {
+        return "Cmd{" +
+                "commandId='" + commandId + '\'' +
+                '}';
     }
 }

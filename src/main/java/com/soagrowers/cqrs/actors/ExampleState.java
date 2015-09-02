@@ -25,7 +25,7 @@ public class ExampleState implements Serializable {
     }
 
     public void update(Evt evt) {
-        events.add(evt.getData());
+        events.add(evt.getEventId());
     }
 
     public int size() {

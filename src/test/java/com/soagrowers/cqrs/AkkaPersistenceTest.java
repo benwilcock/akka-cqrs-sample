@@ -14,36 +14,36 @@ import java.util.concurrent.TimeUnit;
  */
 public class AkkaPersistenceTest {
 
-    private static ActorSystem system;
-    private ActorRef persistentActor;
+    private static ActorSystem actorSystem;
+    private ActorRef actorRef;
 
     @BeforeClass
     public static void init(){
-         system = ActorSystem.create("example");
+         actorSystem = ActorSystem.create("example");
     }
 
     @Before
     public void setup(){
-        persistentActor = system.actorOf(Props.create(ExamplePersistentActor.class), "persistentActor-4-java");
+        actorRef = actorSystem.actorOf(Props.create(ExamplePersistentActor.class), "actorRef-4-java");
     }
 
     @After
     public void teardown() throws InterruptedException {
-        persistentActor.tell("print", null);
+        actorRef.tell("print", null);
         TimeUnit.SECONDS.sleep(5l);
     }
 
     @AfterClass
     public static void close(){
-        system.shutdown();
+        actorSystem.shutdown();
     }
 
     @Test
     public void test(){
-        persistentActor.tell(new Cmd("foo"), null);
-        persistentActor.tell(new Cmd("baz"), null);
-        persistentActor.tell(new Cmd("bar"), null);
-        persistentActor.tell("snap", null);
-        persistentActor.tell(new Cmd("buzz"), null);
+        actorRef.tell(new Cmd("foo"), null);
+        actorRef.tell(new Cmd("baz"), null);
+        actorRef.tell(new Cmd("bar"), null);
+        actorRef.tell("snap", null);
+        actorRef.tell(new Cmd("buzz"), null);
     }
 }
