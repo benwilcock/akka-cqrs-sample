@@ -17,11 +17,9 @@ public class ToDoItemCreatedEvent extends Evt {
     return itemDescription;
   }
 
-  @Override
-  public String toString() {
-    return "ToDoItemCreatedEvent{" +
-            "eventId='" + super.getEventId() + '\'' +
-            "itemDescription='" + itemDescription + '\'' +
-            '}';
-  }
+    @Override
+    public String toString() {
+        return "ToDoItemCreatedEvent["
+                +super.getEventId()+"] '"+ itemDescription + "'";
+    }
 }

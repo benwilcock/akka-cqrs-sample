@@ -8,20 +8,20 @@ import java.util.ArrayList;
 /**
  * Created by ben on 28/08/15.
  */
-public class ToDoItemState implements Serializable {
+public class Events implements Serializable {
 
     private final ArrayList<Evt> events;
 
-    public ToDoItemState() {
+    public Events() {
         this(new ArrayList<Evt>());
     }
 
-    public ToDoItemState(ArrayList<Evt> events) {
+    public Events(ArrayList<Evt> events) {
         this.events = events;
     }
 
-    public ToDoItemState copy() {
-        return new ToDoItemState(new ArrayList<Evt>(events));
+    public Events copy() {
+        return new Events(new ArrayList<Evt>(events));
     }
 
     public void add(Evt evt) {

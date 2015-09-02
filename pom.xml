@@ -10,12 +10,21 @@
 
     <properties>
         <project.junit.version>4.8.1</project.junit.version>
-        <project.akka.version>2.0.2</project.akka.version>
-        <project.akka-persistence.version>2.3.12</project.akka-persistence.version>
+        <project.akka.version>2.3.12</project.akka.version>
         <project.akka-persistence-eventstore.version>2.0.2</project.akka-persistence-eventstore.version>
     </properties>
 
     <dependencies>
+        <!--<dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-testkit_2.11</artifactId>
+            <version>${project.akka.version}</version>
+        </dependency>-->
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-persistence-experimental_2.11</artifactId>
+            <version>${project.akka.version}</version>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -27,11 +36,11 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.7.12</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
             <version>1.7.12</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
@@ -42,16 +51,13 @@
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>2.3</version>
         </dependency>
-        <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-persistence-experimental_2.11</artifactId>
-            <version>${project.akka-persistence.version}</version>
-        </dependency>
+
         <!--<dependency>
             <groupId>com.geteventstore</groupId>
             <artifactId>akka-persistence-eventstore_2.11</artifactId>
             <version>${project.akka-persistence-eventstore.version}</version>
         </dependency>-->
+
     </dependencies>
 
     <build>

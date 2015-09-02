@@ -1,8 +1,5 @@
 package com.soagrowers.cqrs.actors;
 
-import akka.japi.Procedure;
-import akka.persistence.SnapshotOffer;
-import akka.persistence.UntypedPersistentActor;
 import com.soagrowers.cqrs.commands.Cmd;
 import com.soagrowers.cqrs.commands.CreateToDoItemCommand;
 import com.soagrowers.cqrs.commands.PrintStateCommand;
@@ -12,64 +9,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
-import java.util.UUID;
 
 
-public class ToDoItem extends UntypedPersistentActor {
+public class ToDoItem extends AggrRoot {
 
-    private final String persistenceId = UUID.randomUUID().toString();
-    private Optional<String> description = Optional.empty();
-    private ToDoItemState state = new ToDoItemState();
-    private static final Logger logger = LoggerFactory.getLogger(ToDoItem.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ToDoItem.class);
+    protected Optional<String> description = Optional.empty();
 
-    @Override
-    public String persistenceId() {
-        return persistenceId;
+    public ToDoItem() {
+        super();
+        LOG.debug("ID: " + super.persistenceId());
     }
 
-    @Override
-    public void onReceiveRecover(Object msg) {
-        logger.trace("EVENT: " + msg.getClass().getSimpleName());
-        if (msg instanceof Evt) {
-            on((Evt) msg);
-        } else if (msg instanceof SnapshotOffer) {
-            state = (ToDoItemState) ((SnapshotOffer) msg).snapshot();
-        } else {
-            unhandled(msg);
-        }
-    }
-
-    private void on(Evt event) {
-        logger.trace("EVENT: " + event.getClass().getSimpleName());
+    protected void on(Evt event) {
         if (event.getClass().isAssignableFrom(ToDoItemCreatedEvent.class)) {
             on((ToDoItemCreatedEvent) event);
         }
     }
 
     private void on(ToDoItemCreatedEvent event) {
-        logger.trace("EVENT: " + event.getClass().getSimpleName());
-        logger.debug("ADDED: " + event.getEventId() + " '" + event.getItemDescription() + "'");
+        LOG.debug("ADDED     ["+persistenceId()+"]: " + event.toString());
         description = Optional.of(event.getItemDescription());
         state.add(event);
     }
 
-    @Override
-    public void onReceiveCommand(Object msg) {
-        logger.debug("COMMAND: " + msg.getClass().getSimpleName());
 
-        if (msg instanceof Cmd) {
-            on((Cmd) msg);
-        } else if (msg.equals("snap")) {
-            // IMPORTANT: create a copy of snapshot
-            // because ExampleState is mutable !!!
-            saveSnapshot(state.copy());
-        } else {
-            unhandled(msg);
-        }
-    }
-
-    private void on(Cmd command) {
-        logger.trace("COMMAND: " + command.getClass().getSimpleName());
+    protected void on(Cmd command) {
         if (command.getClass().isAssignableFrom(CreateToDoItemCommand.class)) {
             on((CreateToDoItemCommand) command);
         } else if (command.getClass().isAssignableFrom(PrintStateCommand.class)) {
@@ -79,32 +44,22 @@ public class ToDoItem extends UntypedPersistentActor {
 
 
     private void on(CreateToDoItemCommand command) {
-        logger.trace("COMMAND: " + command.getClass().getSimpleName());
+        LOG.debug("PROCESSING["+persistenceId()+"]: " + command.toString());
         if (!description.isPresent()) {
-            final Evt toDoItemCreatedEvent = new ToDoItemCreatedEvent(command.getCommandId(), command.getToDoDescription());
-            logger.debug("RAISED: " + toDoItemCreatedEvent.getClass().getSimpleName());
-            persist(toDoItemCreatedEvent, getApplyEventProcedure());
+            final Evt event = new ToDoItemCreatedEvent(command.getCommandId(), command.getToDoDescription());
+            LOG.debug("RAISED    ["+persistenceId()+"]: " + event.toString());
+            persist(event, getApplyEventProcedure());
         } else {
-            String message = "Actor's can't be created twice!";
-            logger.error(message);
+            String message = "ERROR     ["+persistenceId()+"] - This todo item has already been created and already has a name. The command is invalid!";
+            LOG.error(message);
             throw new IllegalStateException(message);
         }
     }
 
     private void on(PrintStateCommand command) {
-        logger.trace("COMMAND: " + command.getClass().getSimpleName());
-        logger.info("PRINT persistenceId: " + persistenceId + " description: " + description);
-        logger.info("PRINT state: " + state.toString());
+        LOG.info("PRINT persistenceId: " + super.persistenceId() + " description: " + description);
+        LOG.info("PRINT state: " + state.toString());
     }
 
-    private Procedure<Evt> getApplyEventProcedure() {
-        return
-                new Procedure<Evt>() {
-                    public void apply(Evt evt) throws Exception {
-                        on(evt);
-                        getContext().system().eventStream().publish(evt);
-                        logger.debug("APPLIED: " + evt.getClass().getSimpleName() + " (" + evt.getEventId() + ")");
-                    }
-                };
-    }
+
 }

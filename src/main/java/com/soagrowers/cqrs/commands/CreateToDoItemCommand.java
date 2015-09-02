@@ -18,8 +18,7 @@ public class CreateToDoItemCommand extends Cmd{
 
     @Override
     public String toString() {
-        return "CreateToDoItemCommand{" +
-                "toDoDescription='" + toDoDescription + '\'' +
-                "} " + super.toString();
+        return "CreateToDoItemCommand["
+                +super.getCommandId()+"] '"+ toDoDescription + "'";
     }
 }
