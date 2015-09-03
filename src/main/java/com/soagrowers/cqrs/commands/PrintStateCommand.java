@@ -8,4 +8,10 @@ public class PrintStateCommand extends Cmd{
     public PrintStateCommand(String id) {
         super(id);
     }
+
+    @Override
+    public String toString() {
+        return "PrintStateCommand["
+                +super.getCommandId()+"]";
+    }
 }

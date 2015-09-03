@@ -1,8 +1,11 @@
 package com.soagrowers.cqrs.actors;
 
+import akka.actor.ActorInitializationException;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
+import akka.testkit.JavaTestKit;
+import akka.testkit.TestActorRef;
 import com.soagrowers.cqrs.commands.Cmd;
 import com.soagrowers.cqrs.commands.CreateToDoItemCommand;
 import com.soagrowers.cqrs.commands.PrintStateCommand;
@@ -14,8 +17,7 @@ import scala.concurrent.duration.Duration;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-//import akka.testkit.JavaTestKit;
-//import akka.testkit.TestActorRef;
+import static org.junit.Assert.*;
 
 /**
  * Created by ben on 02/09/15.
@@ -56,52 +58,66 @@ public class ToDoItemTest {
     @Test
     public void testCreateCommand() {
         Cmd command = new CreateToDoItemCommand(UUID.randomUUID().toString(), "Buy some Milk!");
-        actorRef = actorSystem.actorOf(Props.create(ToDoItem.class), "TestCreateToDoItem");
         actorRef.tell(command, ActorRef.noSender());
+    }
+
+    @Test
+    public void testCreateCommandWithoutActorSystemFails() {
+        try {
+            Cmd command = new CreateToDoItemCommand(UUID.randomUUID().toString(), "Buy some Milk!");
+            ToDoItem item = new ToDoItem();
+            fail("shouldn't be possible to instantiate an actor without the actor system!");
+        } catch (ActorInitializationException e){
+            assertTrue(true);
+        }
     }
 
     @Test
     public void testCreateTwiceFails() {
         Cmd command = new CreateToDoItemCommand(UUID.randomUUID().toString(), "Buy some Bread!!");
-        actorRef = actorSystem.actorOf(Props.create(ToDoItem.class), "TestCreateTwiceFailsToDoItem");
         actorRef.tell(command, ActorRef.noSender());
         actorRef.tell(command, ActorRef.noSender());
     }
 
-    /*@Test
-    public void testCreateCommandWithTestKit() {
-        new JavaTestKit(actorSystem) {
-            {
-                final TestActorRef<ToDoItem> testItemRef = TestActorRef.create(actorSystem, Props.create(ToDoItem.class), "TestCreateCommandWithTestKit");
-                final CreateToDoItemCommand command = new CreateToDoItemCommand(UUID.randomUUID().toString(), "Buy some Eggs!");
-
-
-                assertFalse(testItemRef.underlyingActor().description.isPresent());
-
-
-                testItemRef.tell(command, getTestActor());
-
-                ToDoItem item = testItemRef.underlyingActor();
-                assertTrue(item.description.isPresent());
-
-            }
-        };
-    }
-
+    /*
     @Test
-    public void testGetGreeter() {
-        new JavaTestKit(system) {{
 
-            final ActorRef greeter = system.actorOf(Props.create(HelloAkkaJava.Greeter.class), "greeter2");
+    public void testCreateCommandWithTestKit() {
+        new JavaTestKit(actorSystem) {{
+            final Props props = Props.create(ToDoItem.class);
 
-            greeter.tell(new HelloAkkaJava.WhoToGreet("testkit"), getTestActor());
-            greeter.tell(new HelloAkkaJava.Greet(), getTestActor());
+            // can also use JavaTestKit “from the outside”
+            final JavaTestKit probe = new JavaTestKit(actorSystem);
+            // “inject” the probe by passing it to the test subject
+            // like a real resource would be passed in production
+            actorRef.tell(probe.getRef(), getRef());
+            // await the correct response
+            expectMsgEquals(duration("1 second"), "done");
 
-            final HelloAkkaJava.Greeting greeting = expectMsgClass(HelloAkkaJava.Greeting.class);
-
-            new Within(duration("10 seconds")) {
+            // the run() method needs to finish within 3 seconds
+            new Within(duration("6 seconds")) {
                 protected void run() {
-                    Assert.assertEquals("hello, testkit", greeting.message);
+
+                    Cmd command = new CreateToDoItemCommand(UUID.randomUUID().toString(), "Buy some Eggs!");
+                    actorRef.tell(command, getRef());
+
+                    // This is a demo: would normally use expectMsgEquals().
+                    // Wait time is bounded by 3-second deadline above.
+//                    new AwaitCond() {
+//                        protected boolean cond() {
+//                            return probe.msgAvailable();
+//                        }
+//                    };
+
+                    // response must have been enqueued to us before probe
+                    // expectMsgEquals(Duration.Zero(), "world");
+
+                    // check that the probe we injected earlier got the msg
+                    probe.expectMsgEquals(duration("3 seconds"), "hello");
+                    Assert.assertEquals(getRef(), probe.getLastSender());
+
+                    // Will wait for the rest of the 3 seconds
+                    expectNoMsg();
                 }
             };
         }};

@@ -14,7 +14,7 @@ import java.util.Optional;
 public class ToDoItem extends AggrRoot {
 
     private static final Logger LOG = LoggerFactory.getLogger(ToDoItem.class);
-    protected Optional<String> description = Optional.empty();
+    Optional<String> description = Optional.empty();
 
     public ToDoItem() {
         super();
@@ -50,7 +50,7 @@ public class ToDoItem extends AggrRoot {
             LOG.debug("RAISED    ["+persistenceId()+"]: " + event.toString());
             persist(event, getApplyEventProcedure());
         } else {
-            String message = "ERROR     ["+persistenceId()+"] - This todo item has already been created and already has a name. The command is invalid!";
+            String message = "ERROR     ["+persistenceId()+"]: This todo item has already been created and already has a name. The command is invalid!";
             LOG.error(message);
             throw new IllegalStateException(message);
         }
